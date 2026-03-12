@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaushal Mela – Visitor Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --teal:   #0fa97a;
+    --teal2:  #0d8f68;
+    --soft:   #f0fdf8;
+    --card:   #ffffff;
+    --text:   #1a2e28;
+    --muted:  #6b8f82;
+    --border: #c3e9d8;
+    --shadow: rgba(15,169,122,0.13);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Nunito',sans-serif;
+    background:linear-gradient(135deg,#e8faf3 0%,#f0fff8 40%,#fffbea 100%);
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; padding:24px 16px 48px;
+  }
+
+  .poster {
+    width:100%; max-width:520px; background:var(--card);
+    border-radius:28px; overflow:hidden;
+    box-shadow:0 8px 40px var(--shadow),0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom:16px;
+  }
+
+  /* Hero */
+  .hero {
+    background:linear-gradient(135deg,#0fa97a 0%,#0d8f68 50%,#0b7a59 100%);
+    padding:32px 28px 24px; position:relative; overflow:hidden; text-align:center;
+  }
+  .hero-dots {
+    position:absolute; inset:0;
+    background-image:radial-gradient(circle,rgba(255,255,255,0.12) 1px,transparent 1px);
+    background-size:22px 22px;
+  }
+  .event-pill {
+    display:inline-flex; align-items:center; gap:7px;
+    background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.35);
+    border-radius:30px; padding:5px 16px; font-size:11px; font-weight:700;
+    letter-spacing:2.5px; color:rgba(255,255,255,0.95); text-transform:uppercase;
+    margin-bottom:14px; position:relative;
+  }
+  .live-dot {
+    width:7px; height:7px; border-radius:50%;
+    background:#fbbf24; box-shadow:0 0 6px #fbbf24;
+    animation:blink 1.3s ease-in-out infinite;
+  }
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .hero-title {
+    font-family:'Baloo 2',cursive; font-size:46px; font-weight:800;
+    color:#fff; line-height:1; margin-bottom:4px; position:relative;
+    text-shadow:0 2px 12px rgba(0,0,0,0.15);
+  }
+  .hero-title span{color:#fbbf24;}
+  .hero-subtitle {
+    font-size:13px; font-weight:600; color:rgba(255,255,255,0.8);
+    letter-spacing:1px; position:relative; margin-bottom:18px;
+  }
+  .steps-row{display:flex;gap:8px;justify-content:center;position:relative;}
+  .step-chip {
+    background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25);
+    border-radius:10px; padding:8px 10px;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    flex:1; max-width:110px;
+  }
+  .step-emoji{font-size:20px;}
+  .step-label{font-size:9px;font-weight:700;color:rgba(255,255,255,0.85);text-align:center;}
+
+  /* QR */
+  .qr-area {
+    background:linear-gradient(180deg,#f7fffe 0%,#edfbf5 100%);
+    padding:24px 28px 18px; display:flex; flex-direction:column;
+    align-items:center; border-bottom:2px dashed var(--border);
+  }
+  .qr-label-top {
+    font-size:12px; font-weight:700; letter-spacing:3px;
+    text-transform:uppercase; color:var(--teal); margin-bottom:14px;
+  }
+  .qr-box {
+    background:white; border-radius:16px; padding:12px;
+    box-shadow:0 4px 20px rgba(15,169,122,0.2),0 0 0 4px rgba(15,169,122,0.08);
+    margin-bottom:10px; position:relative; display:inline-block;
+  }
+  .qr-scan-anim {
+    position:absolute; left:12px; right:12px; height:2px;
+    background:linear-gradient(90deg,transparent,var(--teal),transparent);
+    box-shadow:0 0 8px var(--teal);
+    animation:qrscan 2.4s ease-in-out infinite;
+    z-index:2; pointer-events:none; top:12px;
+  }
+  @keyframes qrscan{0%{top:12px;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:calc(100% - 14px);opacity:0;}}
+  .qr-label-bottom{font-size:11px;font-weight:600;color:var(--muted);text-align:center;}
+
+  /* OR */
+  .or-row {
+    display:flex; align-items:center; gap:12px;
+    width:100%; padding:14px 28px 0; background:#f7fffe;
+  }
+  .or-line{flex:1;height:1.5px;background:var(--border);}
+  .or-text{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+
+  /* Form */
+  .form-section{padding:20px 28px 28px;background:white;}
+  .form-heading {
+    font-family:'Baloo 2',cursive; font-size:20px; font-weight:800;
+    color:var(--text); margin-bottom:3px; display:flex; align-items:center; gap:8px;
+  }
+  .form-subhead{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:18px;}
+  .field-group{margin-bottom:13px;}
+  .field-label {
+    font-size:11px; font-weight:800; letter-spacing:1px;
+    text-transform:uppercase; color:var(--teal2); margin-bottom:5px; display:block;
+  }
+  .field-input {
+    width:100%; padding:12px 15px;
+    border:2px solid var(--border); border-radius:12px;
+    font-family:'Nunito',sans-serif; font-size:14px; font-weight:600;
+    color:var(--text); background:var(--soft); outline:none;
+    transition:border-color .2s,box-shadow .2s,background .2s;
+  }
+  .field-input::placeholder{color:#b0cfc4;font-weight:500;}
+  .field-input:focus{border-color:var(--teal);background:white;box-shadow:0 0 0 4px rgba(15,169,122,0.1);}
+  .field-input.error{border-color:#f87171;background:#fff5f5;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+  .submit-btn {
+    width:100%; padding:15px;
+    background:linear-gradient(135deg,var(--teal) 0%,var(--teal2) 100%);
+    color:white; font-family:'Baloo 2',cursive; font-size:17px; font-weight:800;
+    border:none; border-radius:14px; cursor:pointer;
+    box-shadow:0 4px 16px rgba(15,169,122,0.35);
+    transition:transform .15s,box-shadow .15s;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-top:6px; position:relative; overflow:hidden;
+  }
+  .submit-btn::after {
+    content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+    animation:shimmer 2.5s ease-in-out infinite;
+  }
+  @keyframes shimmer{to{left:160%;}}
+  .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,169,122,0.4);}
+  .submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+  .err-msg {
+    display:none; background:#fff5f5; border:1.5px solid #fca5a5;
+    border-radius:10px; padding:10px 14px;
+    font-size:12px; font-weight:600; color:#dc2626; margin-top:10px; text-align:center;
+  }
+  .spinner {
+    width:20px; height:20px; border:3px solid rgba(255,255,255,0.4);
+    border-top-color:white; border-radius:50%;
+    animation:spin .7s linear infinite; display:none;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* Success */
+  .success-screen {
+    display:none; flex-direction:column; align-items:center;
+    padding:40px 28px; text-align:center;
+  }
+  .success-icon {
+    width:80px; height:80px;
+    background:linear-gradient(135deg,var(--teal),var(--teal2));
+    border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:38px; margin-bottom:20px;
+    box-shadow:0 8px 24px rgba(15,169,122,0.3);
+    animation:pop .5s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+  @keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
+  .success-title{font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;color:var(--text);margin-bottom:8px;}
+  .success-msg{font-size:14px;color:var(--muted);font-weight:600;line-height:1.7;}
+  .success-name{color:var(--teal);font-weight:800;}
+
+  .footer-note{
+    text-align:center;font-size:11px;color:var(--muted);
+    font-weight:600;margin-top:8px;max-width:520px;
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-dots"></div>
+    <div class="event-pill"><div class="live-dot"></div> IT Stall · Kaushal Mela 2025</div>
+    <div class="hero-title">REGISTER<br><span>HERE</span></div>
+    <div class="hero-subtitle">Scan QR Code or Fill Form Below</div>
+    <div class="steps-row">
+      <div class="step-chip"><div class="step-emoji">📱</div><div class="step-label">Open Camera</div></div>
+      <div class="step-chip"><div class="step-emoji">🔍</div><div class="step-label">Scan QR</div></div>
+      <div class="step-chip"><div class="step-emoji">✅</div><div class="step-label">Done!</div></div>
+    </div>
+  </div>
+
+  <!-- QR CODE -->
+  <div class="qr-area">
+    <div class="qr-label-top">↓ &nbsp; Scan to Open Form &nbsp; ↓</div>
+    <div class="qr-box">
+      <div class="qr-scan-anim"></div>
+      <div id="qrcode"></div>
+    </div>
+    <div class="qr-label-bottom">Scan with any phone camera · Opens form instantly</div>
+  </div>
+
+  <!-- OR -->
+  <div class="or-row">
+    <div class="or-line"></div>
+    <div class="or-text">Or fill form below</div>
+    <div class="or-line"></div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-section">
+
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">You're Registered!</div>
+      <div class="success-msg">
+        Welcome, <span class="success-name" id="successName"></span>!<br>
+        Your entry has been saved to our Google Sheet.<br>
+        Enjoy Kaushal Mela 2025! 🚀
+      </div>
+    </div>
+
+    <div id="formContainer">
+      <div class="form-heading"><span>📋</span> Visitor Details</div>
+      <div class="form-subhead">Fill in your details to complete registration</div>
+
+      <div class="field-group">
+        <label class="field-label" for="f-name">Full Name *</label>
+        <input class="field-input" type="text" id="f-name" placeholder="Enter your full name" autocomplete="name">
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label" for="f-class">Class *</label>
+          <input class="field-input" type="text" id="f-class" placeholder="e.g. 10-A">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="f-phone">Phone *</label>
+          <input class="field-input" type="tel" id="f-phone" placeholder="10-digit no." maxlength="10">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="f-school">School Name *</label>
+        <input class="field-input" type="text" id="f-school" placeholder="Enter your school name">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="f-email">Email Address</label>
+        <input class="field-input" type="email" id="f-email" placeholder="your@email.com" autocomplete="email">
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+        <div class="spinner" id="spinner"></div>
+        <span id="btnText">✅ &nbsp; Submit Registration</span>
+      </button>
+
+      <div class="err-msg" id="errMsg"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer-note">🔒 Data saved directly to Google Sheet · No third-party storage · GHSS Damanwada IT Stall</div>
+
+<script>
+  const SHEET_URL = "https://script.google.com/macros/s/AKfycbxbIKmARMEIFCDTH7giKEiysynq7YvZZ8IiKtaZbbDJa38PHUcgFAUmG2Gi-IHqqi6IGA/exec";
+
+  // ── Generate real QR code pointing to this page's URL ──
+  window.addEventListener('load', function () {
+    // Use current page URL if hosted, otherwise use Apps Script URL
+    const pageUrl = (window.location.href && window.location.protocol !== 'file:')
+      ? window.location.href.split('#')[0]
+      : SHEET_URL;
+
+    new QRCode(document.getElementById("qrcode"), {
+      text: pageUrl,
+      width: 180,
+      height: 180,
+      colorDark: "#1a2e28",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  });
+
+  // ── Validation ──
+  function validate() {
+    let ok = true;
+    ['f-name','f-class','f-phone','f-school'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) { el.classList.add('error'); ok = false; }
+      else el.classList.remove('error');
+    });
+    const phone = document.getElementById('f-phone').value.trim();
+    if (phone && !/^\d{10}$/.test(phone)) {
+      document.getElementById('f-phone').classList.add('error'); ok = false;
+    }
+    return ok;
+  }
+
+  // ── Submit to Google Sheet via GET + URL params (avoids CORS issues) ──
+  async function submitForm() {
+    document.querySelectorAll('.field-input').forEach(el => el.classList.remove('error'));
+    document.getElementById('errMsg').style.display = 'none';
+
+    if (!validate()) {
+      showErr('⚠️ Please fill all required fields correctly.');
+      return;
+    }
+
+    const name   = document.getElementById('f-name').value.trim();
+    const cls    = document.getElementById('f-class').value.trim();
+    const phone  = document.getElementById('f-phone').value.trim();
+    const school = document.getElementById('f-school').value.trim();
+    const email  = document.getElementById('f-email').value.trim();
+
+    const btn = document.getElementById('submitBtn');
+    document.getElementById('spinner').style.display = 'block';
+    document.getElementById('btnText').textContent = 'Submitting...';
+    btn.disabled = true;
+
+    // Build GET URL with query params — Apps Script doGet handles this
+    const params = new URLSearchParams({
+      name, class: cls, phone, school, email
+    });
+    const url = SHEET_URL + '?' + params.toString();
+
+    try {
+      const res = await fetch(url, { method: 'GET', mode: 'no-cors' });
+      // no-cors = opaque response, but if no throw = request reached server
+      showSuccess(name);
+    } catch (err) {
+      showErr('❌ Connection error. Please check internet and try again.');
+      btn.disabled = false;
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('btnText').textContent = '✅  Submit Registration';
+    }
+  }
+
+  function showSuccess(name) {
+    document.getElementById('formContainer').style.display = 'none';
+    const s = document.getElementById('successScreen');
+    s.style.display = 'flex';
+    document.getElementById('successName').textContent = name;
+  }
+
+  function showErr(msg) {
+    const el = document.getElementById('errMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  document.querySelectorAll('.field-input').forEach(el => {
+    el.addEventListener('input', () => el.classList.remove('error'));
+  });
+</script>
+</body>
+</html>
